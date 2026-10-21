@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#6558d3">
+<title>قهرمان ساعت</title>
+<style>
+:root{
+  --purple:#6558d3; --pink:#ff679d; --blue:#39a9ff; --mint:#32c7a1;
+  --yellow:#ffd85e; --ink:#273052; --bg:#f5f5ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:Tahoma,"Arial",sans-serif;
+  background:linear-gradient(160deg,#f8f4ff 0%,#eaf7ff 50%,#fff5f8 100%);
+  color:var(--ink); min-height:100vh;
+}
+button,input{font:inherit} button{cursor:pointer;border:0}
+.app{max-width:560px;margin:auto;padding:16px 15px 28px}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{
+  width:54px;height:54px;border-radius:18px;
+  background:linear-gradient(135deg,#ffce57,#ff8f9f);
+  display:grid;place-items:center;font-size:30px;
+  box-shadow:0 5px 0 #e6a3a8;
+  animation:logoBounce 2.5s ease-in-out infinite;
+}
+@keyframes logoBounce{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-4px)}
+}
+h1{font-size:23px;margin:0;color:#4d43b6}
+.sub{font-size:12px;color:#6d7191;margin-top:4px}
+.stars-box{
+  background:white;border-radius:16px;padding:9px 14px;
+  font-size:18px;font-weight:bold;box-shadow:0 4px 0 #e2e4f7;
+  white-space:nowrap; display:flex; align-items:center; gap:4px;
+}
+
+.modebar{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0}
+.mode{
+  padding:13px 7px;border-radius:17px;background:#e9e8ff;
+  color:#6558b9;font-weight:bold;border:2px solid transparent;min-height:54px;
+  transition:all .15s;
+}
+.mode.active{background:#6558d3;color:white;box-shadow:0 4px 0 #463aa9}
+.mode:active{transform:scale(.97)}
+
+.panel{
+  background:#fff;border-radius:25px;padding:17px;
+  box-shadow:0 7px 0 #e1e5fa;margin:13px 0;
+  position:relative; overflow:hidden;
+}
+h2{font-size:18px;margin:3px 0 12px;text-align:center}
+
+.settings{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#fff0c9;color:#755b00;border-radius:14px;
+  padding:10px;margin:10px 0;font-size:14px;font-weight:bold;
+}
+.settings input{width:20px;height:20px;accent-color:#6558d3}
+
+.clock-wrap{
+  display:flex;justify-content:center;align-items:center;
+  margin:8px auto 14px;max-width:330px; min-height:200px;
+}
+svg{width:100%;height:auto;max-height:330px;overflow:visible}
+
+.digital-time{
+  font-size:58px;font-weight:900;color:#5147b6;
+  background:linear-gradient(145deg,#f0edff,#e8f4ff);
+  border:5px solid #d9d4ff;border-radius:25px;
+  padding:22px 20px;box-shadow:0 6px 0 #c6c0f2;
+  letter-spacing:2px; text-align:center; line-height:1.15;
+}
+.digital-ampm{
+  font-size:22px; color:#7a6fd0; margin-top:6px; font-weight:800;
+}
+
+.prompt{font-weight:bold;text-align:center;font-size:18px;margin:12px 0;color:#4c4b85}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option{
+  min-height:84px;border-radius:21px;padding:13px 6px;color:#fff;
+  font-size:26px;font-weight:900;letter-spacing:1px;
+  text-shadow:0 2px 0 #0001;box-shadow:0 6px 0 #0002;
+  transition:transform .12s,filter .12s, box-shadow .12s;
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  flex-direction:column;
+}
+.option .ampm-tag{font-size:14px; opacity:.9; font-weight:700; margin-top:2px}
+.option:active{transform:translateY(4px);box-shadow:0 2px 0 #0002}
+.option:nth-child(1){background:linear-gradient(145deg,#ff719e,#ff4f84)}
+.option:nth-child(2){background:linear-gradient(145deg,#41b9ff,#3288f5)}
+.option:nth-child(3){background:linear-gradient(145deg,#32c7a1,#1fa87e)}
+.option:nth-child(4){background:linear-gradient(145deg,#ffb347,#ff8c1a)}
+.option:disabled{filter:saturate(.55);opacity:.8; cursor:default}
+.option.correct-flash{animation:correctPulse .5s ease}
+.option.wrong-flash{animation:wrongShake .4s ease}
+@keyframes correctPulse{
+  0%{transform:scale(1)} 40%{transform:scale(1.08)} 100%{transform:scale(1)}
+}
+@keyframes wrongShake{
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)}
+}
+
+.feedback{min-height:48px;text-align:center;font-weight:bold;font-size:17px;padding:12px 4px 0}
+.feedback.good{color:#079a72}
+.feedback.bad{color:#d64d77}
+
+.small-note{text-align:center;color:#777b9b;font-size:12px;margin-top:9px}
+.footer{text-align:center;color:#888aa7;font-size:11px;margin-top:18px}
+
+/* Red warning flash */
+.red-flash{
+  position:fixed; inset:0; background:rgba(220,50,80,.32);
+  pointer-events:none; z-index:40; opacity:0;
+  transition:opacity .15s ease;
+}
+.red-flash.show{opacity:1}
+
+/* Star rain */
+.star-rain{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.falling-star{
+  position:absolute;top:-60px;font-size:30px;
+  animation:starFall 1.55s ease-in forwards;
+  filter:drop-shadow(0 3px 3px #d4a00066);
+}
+@keyframes starFall{
+  0%{transform:translateY(-40px) rotate(0deg) scale(.5);opacity:0}
+  12%{opacity:1} 85%{opacity:1}
+  100%{transform:translateY(110vh) rotate(420deg) scale(1.15);opacity:0}
+}
+
+/* Mini stars popup on every correct */
+.mini-stars{
+  position:fixed; inset:0; pointer-events:none; z-index:55;
+  display:flex; align-items:center; justify-content:center;
+}
+.mini-star-item{
+  position:absolute; font-size:42px;
+  animation:miniStarPop .9s ease-out forwards;
+}
+@keyframes miniStarPop{
+  0%{transform:scale(0) translateY(20px); opacity:0}
+  30%{transform:scale(1.3) translateY(-10px); opacity:1}
+  70%{opacity:1}
+  100%{transform:scale(.6) translateY(-80px); opacity:0}
+}
+
+/* Cheer overlay */
+.cheer-overlay{
+  position:fixed;inset:0;background:#342b6a66;
+  display:none;align-items:center;justify-content:center;
+  padding:22px;z-index:60;
+}
+.cheer-overlay.show{display:flex;animation:fadeIn .25s ease-out}
+.cheer-card{
+  width:min(340px,100%);
+  background:linear-gradient(145deg,#fff8d7,#ffe5f0 55%,#e6f6ff);
+  border:5px solid #fff;border-radius:30px;padding:24px 18px;
+  text-align:center;box-shadow:0 12px 0 #4d3c9b55;
+  animation:pop .4s cubic-bezier(.2,1.6,.4,1);
+}
+.cheer-art{font-size:90px;line-height:1.2;animation:bounce .65s ease-in-out infinite alternate}
+.cheer-title{font-size:27px;color:#6550c7;font-weight:900;margin:8px 0}
+.cheer-copy{font-size:17px;color:#6c548c;font-weight:bold;line-height:1.7}
+.cheer-close{
+  margin-top:15px;padding:12px 22px;background:#6558d3;color:white;
+  border-radius:15px;font-weight:bold;box-shadow:0 4px 0 #463aa9;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{transform:scale(.65)}to{transform:scale(1)}}
+@keyframes bounce{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-8px) rotate(5deg)}}
+
+/* Progress dots for streak */
+.streak-bar{
+  display:flex; justify-content:center; gap:8px; margin:8px 0 4px;
+}
+.streak-dot{
+  width:14px; height:14px; border-radius:50%;
+  background:#e0dff5; border:2px solid #c5c3e8;
+  transition:all .25s;
+}
+.streak-dot.filled{
+  background:linear-gradient(135deg,#ffd85e,#ffb347);
+  border-color:#e6a020; box-shadow:0 0 8px #ffd85e88;
+  transform:scale(1.15);
+}
+
+@media(max-width:370px){
+  h1{font-size:19px}
+  .option{font-size:22px;min-height:74px}
+  .panel{padding:12px}
+  .clock-wrap{max-width:290px}
+  .digital-time{font-size:46px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo">🕒</div>
+      <div>
+        <h1>قهرمان ساعت</h1>
+        <div class="sub">بازی یادگیری ساعت برای قهرمان‌های کوچک</div>
+      </div>
+    </div>
+    <div class="stars-box">⭐ <span id="stars">۰</span></div>
+  </header>
+
+  <div class="modebar">
+    <button class="mode active" id="modeRead" onclick="setMode('read')">🕰️ ساعت‌خوانی</button>
+    <button class="mode" id="modeConvert" onclick="setMode('convert')">🏁 مسابقهٔ ساعت</button>
+  </div>
+
+  <div class="panel">
+    <h2 id="title">ساعت چند است؟</h2>
+    <div class="settings" id="dialSetting" style="display:none">
+      <input type="checkbox" id="innerNums" checked onchange="renderClock()">
+      <label for="innerNums">نمایش اعداد ۱ تا ۱۲ در حلقهٔ داخلی</label>
+    </div>
+
+    <div class="streak-bar" id="streakBar" title="پاسخ‌های درست پشت‌سرهم">
+      <div class="streak-dot" id="dot1"></div>
+      <div class="streak-dot" id="dot2"></div>
+      <div class="streak-dot" id="dot3"></div>
+    </div>
+
+    <div class="clock-wrap" id="clockWrap"></div>
+    <div class="prompt" id="prompt">زمان درست را انتخاب کن!</div>
+    <div class="options" id="options"></div>
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+    <div class="small-note" id="note">با هر ۳ پاسخ درست پشت‌سرهم، یک ستاره می‌گیری!</div>
+  </div>
+
+  <div class="footer">هر بار با دقت نگاه کن؛ تو می‌توانی! 🌈</div>
+</div>
+
+<div id="redFlash" class="red-flash" aria-hidden="true"></div>
+<div id="starRain" class="star-rain" aria-hidden="true"></div>
+<div id="miniStars" class="mini-stars" aria-hidden="true"></div>
+
+<div id="cheerOverlay" class="cheer-overlay" role="dialog" aria-modal="true">
+  <div class="cheer-card">
+    <div class="cheer-art" id="cheerArt">🦁</div>
+    <div class="cheer-title" id="cheerTitle">آفرین قهرمان!</div>
+    <div class="cheer-copy" id="cheerCopy">تو فوق‌العاده‌ای!</div>
+    <button class="cheer-close" onclick="closeCheer()">ادامهٔ بازی 🚀</button>
+  </div>
+</div>
+
+<script>
+const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+
+let mode = 'read';
+let hour = 9, minute = 0;
+let answered = false;
+let firstTry = true;
+let correctStreak = 0;
+let stars = 0;
+let currentCorrect = '';
+let currentCorrectLabel = '';
+
+function setMode(m) {
+  mode = m;
+  document.getElementById('modeRead').classList.toggle('active', m === 'read');
+  document.getElementById('modeConvert').classList.toggle('active', m === 'convert');
+  document.getElementById('dialSetting').style.display = (m === 'read') ? 'flex' : 'none';
+  document.getElementById('title').textContent = m === 'read' ? 'ساعت چند است؟' : 'این ساعت را تبدیل کن';
+  newQuestion();
+}
+
+function randomTime() {
+  // Prefer times that are educational: 5-min steps, avoid pure midnight edge cases sometimes
+  hour = Math.floor(Math.random() * 24); // 0-23
+  minute = Math.floor(Math.random() * 12) * 5;
+}
+
+function pad2(n) {
+  return String(n).padStart(2, '0');
+}
+
+function to12h(h) {
+  const h12 = h % 12 || 12;
+  const isAM = h < 12;
+  return { h12, isAM, label: isAM ? 'AM' : 'PM' };
+}
+
+function format24(h, m) {
+  return fa(pad2(h) + ':' + pad2(m));
+}
+
+function format12(h, m) {
+  const { h12, label } = to12h(h);
+  return fa(pad2(h12) + ':' + pad2(m)) + ' ' + label;
+}
+
+function format12Fa(h, m) {
+  const { h12, isAM } = to12h(h);
+  const period = isAM ? 'صبح' : 'بعدازظهر';
+  return fa(pad2(h12) + ':' + pad2(m)) + ' ' + period;
+}
+
+/* ---------- Clock drawing ---------- */
+function renderClock() {
+  const showInner = document.getElementById('innerNums').checked;
+  const cx = 160, cy = 160;
+  let s = `<svg viewBox="0 0 320 320" role="img" aria-label="ساعت آموزشی">
+    <defs>
+      <linearGradient id="face" x1="0" y1="0" x2="1" y2="1">
+        <stop stop-color="#fff"/><stop offset="1" stop-color="#f0f4ff"/>
+      </linearGradient>
+      <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#a9b3df" flood-opacity=".5"/></filter>
+    </defs>
+    <circle cx="160" cy="160" r="151" fill="#ffd95c"/>
+    <circle cx="160" cy="157" r="143" fill="url(#face)" stroke="#6558d3" stroke-width="5" filter="url(#shadow)"/>`;
+
+  for (let i = 0; i < 60; i++) {
+    const a = (i * 6 - 90) * Math.PI / 180;
+    const r1 = i % 5 === 0 ? 126 : 132, r2 = 139;
+    s += `<line x1="${cx + r1 * Math.cos(a)}" y1="${cy + r1 * Math.sin(a)}"
+               x2="${cx + r2 * Math.cos(a)}" y2="${cy + r2 * Math.sin(a)}"
+               stroke="${i % 5 === 0 ? '#7c75cf' : '#cbd0ed'}"
+               stroke-width="${i % 5 === 0 ? 3 : 1.3}" stroke-linecap="round"/>`;
+  }
+
+  for (let n = 1; n <= 12; n++) {
+    const a = (n * 30 - 90) * Math.PI / 180;
+    const rr = 110;
+    // Outer numbers show 13-24 style for 24h feel, but keep classic positions
+    const val = n === 12 ? 12 : n;
+    s += `<text x="${cx + rr * Math.cos(a)}" y="${cy + rr * Math.sin(a) + 7}"
+               text-anchor="middle" font-size="22" font-weight="900" fill="#5548bd">${fa(val)}</text>`;
+    if (showInner) {
+      const ri = 78;
+      const inner = n === 12 ? 24 : n + 12;
+      s += `<text x="${cx + ri * Math.cos(a)}" y="${cy + ri * Math.sin(a) + 5}"
+                 text-anchor="middle" font-size="13" font-weight="700" fill="#9b9fc3">${fa(inner)}</text>`;
+    }
+  }
+
+  // Hands: standard 12-hour positions
+  const h12 = hour % 12;
+  const ha = ((h12 + minute / 60) * 30 - 90) * Math.PI / 180;
+  const ma = (minute * 6 - 90) * Math.PI / 180;
+  const hx = cx + 68 * Math.cos(ha), hy = cy + 68 * Math.sin(ha);
+  const mx = cx + 105 * Math.cos(ma), my = cy + 105 * Math.sin(ma);
+
+  s += `<line x1="${cx}" y1="${cy}" x2="${hx}" y2="${hy}" stroke="#ff5f8f" stroke-width="10" stroke-linecap="round"/>
+        <line x1="${cx}" y1="${cy}" x2="${mx}" y2="${my}" stroke="#328ff2" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="${cx}" cy="${cy}" r="10" fill="#6558d3"/>
+        <circle cx="${cx}" cy="${cy}" r="4" fill="#fff"/>
+  </svg>`;
+  document.getElementById('clockWrap').innerHTML = s;
+}
+
+/* ---------- Effects ---------- */
+function rainStars() {
+  const layer = document.getElementById('starRain');
+  const symbols = ['⭐', '🌟', '✨', '💫'];
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement('span');
+    el.className = 'falling-star';
+    el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    el.style.left = (Math.random() * 100) + '%';
+    el.style.animationDelay = (Math.random() * 0.6) + 's';
+    el.style.fontSize = (22 + Math.random() * 24) + 'px';
+    layer.appendChild(el);
+    setTimeout(() => el.remove(), 2300);
+  }
+}
+
+function showMiniStars() {
+  const layer = document.getElementById('miniStars');
+  layer.innerHTML = '';
+  const positions = [
+    { x: -60, y: -20 }, { x: 0, y: -40 }, { x: 60, y: -20 },
+    { x: -40, y: 10 }, { x: 40, y: 10 }
+  ];
+  positions.forEach((p, i) => {
+    const el = document.createElement('span');
+    el.className = 'mini-star-item';
+    el.textContent = ['⭐', '🌟', '✨'][i % 3];
+    el.style.left = `calc(50% + ${p.x}px)`;
+    el.style.top = `calc(45% + ${p.y}px)`;
+    el.style.animationDelay = (i * 0.07) + 's';
+    layer.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
+  });
+}
+
+function flashRed() {
+  const el = document.getElementById('redFlash');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 320);
+}
+
+function updateStreakDots() {
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('dot' + i).classList.toggle('filled', i <= correctStreak);
+  }
+}
+
+function playCheer() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const notes = [659.25, 783.99, 1046.5, 1318.5];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.type = i === 3 ? 'triangle' : 'sine';
+      osc.frequency.value = freq;
+      osc.connect(gain); gain.connect(ctx.destination);
+      const start = ctx.currentTime + i * 0.12, duration = 0.24;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.28, start + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      osc.start(start); osc.stop(start + duration + 0.02);
+    });
+    [1046.5, 1318.5, 1568].forEach((freq, i) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.value = freq;
+      osc.connect(gain); gain.connect(ctx.destination);
+      const start = ctx.currentTime + 0.48, end = start + 0.4;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.1, start + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, end);
+      osc.start(start); osc.stop(end + 0.02);
+    });
+    setTimeout(() => ctx.close(), 1500);
+  } catch (e) { playTone(true); }
+}
+
+function playTone(good) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.value = good ? 880 : 220;
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.14, ctx.currentTime + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (good ? 0.28 : 0.22));
+    o.start();
+    o.stop(ctx.currentTime + (good ? 0.3 : 0.24));
+  } catch (e) {}
+}
+
+function closeCheer() {
+  document.getElementById('cheerOverlay').classList.remove('show');
+  newQuestion();
+}
+
+function showCartoonReward() {
+  const art = ['🦁', '🦊', '🐼', '🦄', '🐸', '🐯', '🐻', '🐰', '🐵', '🐨', '🐙', '🦋'];
+  const messages = [
+    ['قهرمان کوچولو!', 'سه ستاره گرفتی؛ چه باهوشی! 🌟'],
+    ['آفرین نابغه!', 'تو داری ساعت‌خوانی را عالی یاد می‌گیری! 🎉'],
+    ['چه قهرمان زرنگی!', 'ادامه بده؛ ستاره‌های بیشتری در راه‌اند! 🚀'],
+    ['هورااا!', 'تمرین تو نتیجه داد؛ به خودت افتخار کن! 🌈'],
+    ['ایول قهرمان!', 'ساعت دیگه از تو حساب می‌بره! ⏰✨']
+  ];
+  const idx = Math.floor(Math.random() * messages.length);
+  document.getElementById('cheerArt').textContent = art[Math.floor(Math.random() * art.length)];
+  document.getElementById('cheerTitle').textContent = messages[idx][0];
+  document.getElementById('cheerCopy').textContent = messages[idx][1];
+  document.getElementById('cheerOverlay').classList.add('show');
+}
+
+/* ---------- Distinct distractors ---------- */
+function makeDistinctWrong(correctH, correctM, is12Mode) {
+  // Generate candidates that are clearly different (at least 1 hour or 15+ min away)
+  const candidates = [];
+  const used = new Set([correctH * 60 + correctM]);
+
+  // Hour offsets that are educationally useful
+  const hourOffsets = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  const minOffsets = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+
+  // Prefer wrong hours first
+  for (let i = 0; i < 20 && candidates.length < 6; i++) {
+    let h, m;
+    if (Math.random() < 0.55) {
+      h = (correctH + hourOffsets[Math.floor(Math.random() * hourOffsets.length)]) % 24;
+      m = correctM;
+    } else if (Math.random() < 0.7) {
+      h = correctH;
+      m = (correctM + minOffsets[Math.floor(Math.random() * minOffsets.length)]) % 60;
+    } else {
+      h = (correctH + hourOffsets[Math.floor(Math.random() * hourOffsets.length)]) % 24;
+      m = (correctM + minOffsets[Math.floor(Math.random() * minOffsets.length)]) % 60;
+    }
+    const key = h * 60 + m;
+    if (used.has(key)) continue;
+    used.add(key);
+    candidates.push({ h, m });
+  }
+
+  // Pick one that is not the same 12h representation if in 12-mode context
+  for (const c of candidates) {
+    if (is12Mode) {
+      const c12 = to12h(c.h);
+      const corr12 = to12h(correctH);
+      // Avoid same hour+minute+period
+      if (c12.h12 === corr12.h12 && c.m === correctM && c12.isAM === corr12.isAM) continue;
+    }
+    return c;
+  }
+  // Fallback
+  return { h: (correctH + 3) % 24, m: (correctM + 15) % 60 };
+}
+
+/* ---------- Question generation ---------- */
+function newQuestion() {
+  answered = false;
+  firstTry = true;
+  randomTime();
+  document.getElementById('feedback').textContent = '';
+  document.getElementById('feedback').className = 'feedback';
+  updateStreakDots();
+
+  if (mode === 'read') {
+    renderClock();
+    document.getElementById('prompt').textContent = 'زمان درست را انتخاب کن!';
+    document.getElementById('note').textContent = 'با هر ۳ پاسخ درست پشت‌سرهم، یک ستاره می‌گیری!';
+
+    // Always show two clear options: 24h style (no AM/PM needed on dial)
+    // Correct answer
+    const correctStr = format24(hour, minute);
+    currentCorrect = correctStr;
+    currentCorrectLabel = correctStr;
+
+    const wrong = makeDistinctWrong(hour, minute, false);
+    const wrongStr = format24(wrong.h, wrong.m);
+
+    let choices = [
+      { value: correctStr, label: correctStr, isCorrect: true },
+      { value: wrongStr, label: wrongStr, isCorrect: false }
+    ];
+    if (Math.random() < 0.5) choices.reverse();
+
+    document.getElementById('options').innerHTML = choices.map(c =>
+      `<button class="option" data-value="${c.value}" onclick="choose(this)">${c.label}</button>`
+    ).join('');
+
+  } else {
+    // Convert mode: show either 24h or 12h+AM/PM and ask for the other
+    const to12 = Math.random() < 0.5; // true = show 24h, ask for 12h+AM/PM
+
+    if (to12) {
+      // Show 24-hour digital, ask for 12h with AM/PM
+      document.getElementById('clockWrap').innerHTML = `
+        <div class="digital-time">${format24(hour, minute)}
+          <div class="digital-ampm" style="font-size:16px;color:#9a94d0">ساعت ۲۴ ساعته</div>
+        </div>`;
+      document.getElementById('prompt').textContent = 'معادل ۱۲ ساعته (با AM یا PM) را انتخاب کن';
+      document.getElementById('note').textContent = 'صبح = AM · بعدازظهر/شب = PM';
+
+      const correctLabel = format12(hour, minute); // e.g. ۰۹:۳۰ AM
+      currentCorrect = correctLabel;
+      currentCorrectLabel = correctLabel;
+
+      // Wrong: either different hour or flipped AM/PM carefully
+      let wrong;
+      let attempts = 0;
+      do {
+        wrong = makeDistinctWrong(hour, minute, true);
+        attempts++;
+      } while (attempts < 8 && to12h(wrong.h).h12 === to12h(hour).h12 && wrong.m === minute);
+
+      // Also ensure the displayed string is different
+      let wrongLabel = format12(wrong.h, wrong.m);
+      if (wrongLabel === correctLabel) {
+        // force flip period or change hour
+        const flipped = hour < 12 ? hour + 12 : hour - 12;
+        wrongLabel = format12(flipped, minute);
+      }
+
+      let choices = [
+        { value: correctLabel, label: correctLabel },
+        { value: wrongLabel, label: wrongLabel }
+      ];
+      if (Math.random() < 0.5) choices.reverse();
+
+      document.getElementById('options').innerHTML = choices.map(c =>
+        `<button class="option" data-value="${c.value}" onclick="choose(this)">${c.label}</button>`
+      ).join('');
+
+    } else {
+      // Show 12h + AM/PM, ask for 24h
+      const { h12, isAM, label } = to12h(hour);
+      const periodFa = isAM ? 'صبح (AM)' : 'بعدازظهر (PM)';
+      document.getElementById('clockWrap').innerHTML = `
+        <div class="digital-time">${fa(pad2(h12) + ':' + pad2(minute))}
+          <div class="digital-ampm">${label} · ${periodFa}</div>
+        </div>`;
+      document.getElementById('prompt').textContent = 'معادل ۲۴ ساعته را انتخاب کن';
+      document.getElementById('note').textContent = 'صبح (AM) = ۰ تا ۱۱ · بعدازظهر (PM) = ۱۲ تا ۲۳';
+
+      const correctLabel = format24(hour, minute);
+      currentCorrect = correctLabel;
+      currentCorrectLabel = correctLabel;
+
+      let wrong = makeDistinctWrong(hour, minute, false);
+      // Prefer a wrong that keeps same 12h face but wrong period if possible
+      if (Math.random() < 0.4) {
+        const flipped = hour < 12 ? hour + 12 : hour - 12;
+        wrong = { h: flipped, m: minute };
+      }
+      let wrongLabel = format24(wrong.h, wrong.m);
+      if (wrongLabel === correctLabel) {
+        wrong = { h: (hour + 5) % 24, m: minute };
+        wrongLabel = format24(wrong.h, wrong.m);
+      }
+
+      let choices = [
+        { value: correctLabel, label: correctLabel },
+        { value: wrongLabel, label: wrongLabel }
+      ];
+      if (Math.random() < 0.5) choices.reverse();
+
+      document.getElementById('options').innerHTML = choices.map(c =>
+        `<button class="option" data-value="${c.value}" onclick="choose(this)">${c.label}</button>`
+      ).join('');
+    }
+  }
+}
+
+function choose(btn) {
+  if (answered) return;
+  const value = btn.getAttribute('data-value');
+
+  if (value === currentCorrect) {
+    answered = true;
+    document.querySelectorAll('.option').forEach(b => b.disabled = true);
+    btn.classList.add('correct-flash');
+
+    showMiniStars();
+    playCheer();
+
+    if (firstTry) {
+      correctStreak++;
+      updateStreakDots();
+      if (correctStreak >= 3) {
+        stars++;
+        correctStreak = 0;
+        updateStreakDots();
+        document.getElementById('stars').textContent = fa(stars);
+        document.getElementById('feedback').textContent = 'آفرین! یک ستاره گرفتی! ⭐🎉';
+        document.getElementById('feedback').className = 'feedback good';
+        rainStars();
+
+        // After every 3 stars → cartoon character
+        if (stars % 3 === 0) {
+          setTimeout(() => showCartoonReward(), 700);
+          return;
+        }
+      } else {
+        document.getElementById('feedback').textContent = 'آفرین! عالی بود! 🎉';
+        document.getElementById('feedback').className = 'feedback good';
+      }
+    } else {
+      document.getElementById('feedback').textContent = 'آفرین، این بار درست شد! 🌟';
+      document.getElementById('feedback').className = 'feedback good';
+    }
+
+    setTimeout(() => {
+      if (!document.getElementById('cheerOverlay').classList.contains('show')) {
+        newQuestion();
+      }
+    }, 1100);
+
+  } else {
+    // Wrong answer
+    firstTry = false;
+    correctStreak = 0;
+    updateStreakDots();
+    btn.classList.add('wrong-flash');
+    setTimeout(() => btn.classList.remove('wrong-flash'), 450);
+
+    flashRed();
+    document.getElementById('feedback').textContent = 'نه عزیزم، بیشتر دقت کن 💛';
+    document.getElementById('feedback').className = 'feedback bad';
+    playTone(false);
+  }
+}
+
+// Start
+newQuestion();
+</script>
+</body>
+</html>

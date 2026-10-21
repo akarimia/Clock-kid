@@ -1,0 +1,12 @@
+{
+  "name": "قهرمان ساعت",
+  "short_name": "قهرمان ساعت",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f5ff",
+  "theme_color": "#6558d3",
+  "lang": "fa",
+  "dir": "rtl",
+  "icons": []
+}
