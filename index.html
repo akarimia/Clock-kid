@@ -691,6 +691,15 @@ function choose(btn) {
 
 // Start
 newQuestion();
+
+// ثبت Service Worker برای پشتیبانی آفلاین و نصب بهتر
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker ثبت شد:', reg.scope))
+      .catch(err => console.log('خطا در ثبت Service Worker:', err));
+  });
+}
 </script>
 </body>
 </html>
