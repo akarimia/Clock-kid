@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.akarimia.twa",
+        "sha256_cert_fingerprints": ["64:F3:D5:A3:A2:7A:52:FE:BD:0A:0D:89:BA:AA:52:69:69:91:3D:6E:68:3A:AB:C9:3E:8C:2F:54:6F:F3:35:23"]
+      }
+    }]
