@@ -2,7 +2,9 @@
   "relation": ["delegate_permission/common.handle_all_urls"],
   "target": {
     "namespace": "android_app",
-    "package_name": "com.akarimia.Clockkid",
-    "sha256_cert_fingerprints": ["C6B9sEQNGrty"]
+    "package_name": "io.github.akarimia.twa",
+    "sha256_cert_fingerprints": [
+      "84:1C:D5:62:68:EC:32:D5:62:77:6A:1F:99:D8:0C:41:84:6F:60:C7:6F:57:D7:81:BD:03:9E:5B:FC:08:45:7F"
+    ]
   }
 }]
